@@ -6,9 +6,18 @@ public class City {
 	private int id;
 	private String cityName;
 	private String cityCode;
-	
+	private int provinceId;
+
+	public int getProvinceId() {
+		return provinceId;
+	}
+
+	public void setProvinceId(int provinceId) {
+		this.provinceId = provinceId;
+	}
+
 	public int getId() {
-		
+
 		return id;
 	}
 
@@ -35,5 +44,5 @@ public class City {
 	public City() {
 		// TODO 自动生成的构造函数存根
 	}
-	
+
 }

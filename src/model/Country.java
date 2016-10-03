@@ -6,7 +6,16 @@ public class Country {
 	private int id;
 	private String countryName;
 	private String countryCode;
-	
+	private int cityId;
+
+	public int getCityId() {
+		return cityId;
+	}
+
+	public void setCityId(int cityId) {
+		this.cityId = cityId;
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -34,5 +43,5 @@ public class Country {
 	public Country() {
 		// TODO 自动生成的构造函数存根
 	}
-	
+
 }
