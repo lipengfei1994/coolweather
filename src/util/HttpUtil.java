@@ -1,6 +1,7 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,10 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.Buffer;
 
+import org.apache.http.HttpConnection;
+
 import model.City;
 import model.CoolWeatherDB;
 import model.Country;
 import model.Province;
+import android.R.integer;
 import android.drm.DrmManagerClient.OnErrorListener;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -24,38 +28,59 @@ public class HttpUtil {
 			final HttpCallbackListener listen) {
 		new Thread(new Runnable() {
 			
-			private HttpURLConnection connection;
+			
 
 			@Override
 			public void run() {
-				URL url = null;
+				HttpURLConnection connection=null;
 				try {
-					url = new URL(address);
+					URL url = new URL(address);
 					connection=(HttpURLConnection)url.openConnection();
 					connection.setRequestMethod("GET");
 					connection.setConnectTimeout(8000);
+					connection.setReadTimeout(8000);
+					
+					//connection.setRequestProperty("contentType","UTF-8");
 					if (connection.getResponseCode()==200) {
 						InputStream in= connection.getInputStream();
-						BufferedReader reader=new BufferedReader(new InputStreamReader(in));
-						StringBuilder response=new StringBuilder();
-						String line;
-						while( (line=reader.readLine())!=null){
-							response.append(line);
-						}
+						
+//						StringBuilder response=new StringBuilder();
+//						
+//						BufferedReader reader=new BufferedReader(new InputStreamReader(in));
+//						
+//						String s=null;
+//						while( (s=reader.readLine())!=null){
+//							response.append(s);
+//						}
+						
+						byte[] byt=new byte[1024];
+						int len= in.read(byt);
+						String response=new String(byt,0,len);
+						
+//						
+//						
+						
 						if(listen!=null){
 							//回调onFinsh方法
-							listen.onFinish(response.toString());
+							String s1=response.toString();
+							listen.onFinish(s1);
 						}
 					}else {
 						Log.i("error", "responcecode!=200");
 					}
 					
-				} catch (MalformedURLException e) {
+				} catch (Exception e) {
 					// TODO 自动生成的 catch 块
 					e.printStackTrace();
-				}catch (IOException e) {
-					// TODO 自动生成的 catch 块
-					e.printStackTrace();
+					if(listen!=null){
+						listen.OnErrorListener(e);
+					}
+					
+				}
+				finally{
+					if(connection!=null){
+						connection.disconnect();
+					}
 				}
 			
 				
